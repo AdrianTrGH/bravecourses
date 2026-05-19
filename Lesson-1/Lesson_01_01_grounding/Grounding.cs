@@ -61,9 +61,9 @@ internal static class Grounding
 
     private static bool ConfirmRun()
     {
-        Console.WriteLine("UWAGA: Ten pipeline wykonuje wiele zapytań do API i może zużyć znaczną liczbę tokenów.");
-        Console.Write("Czy chcesz kontynuować? [t/N] ");
+        Console.WriteLine("WARNING: This pipeline makes many API calls and may consume a significant number of tokens.");
+        Console.Write("Continue? [y/N] ");
         var answer = Console.ReadLine()?.Trim().ToLowerInvariant();
-        return answer is "t" or "tak" or "y" or "yes";
+        return answer is "y" or "yes";
     }
 }

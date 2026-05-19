@@ -75,7 +75,7 @@ internal static class TaskPeople
                         && p.BornYear >= CurrentYear - MaxAge
                         && p.BornYear <= CurrentYear - MinAge)
             .ToList();
-        Console.WriteLine($"After filter (M + Grudziądz + age {MinAge}-{MaxAge}): {candidates.Count}");
+        Console.WriteLine($"After filter (M + Grudziądz + age {MinAge}-{MaxAge} in {CurrentYear}): {candidates.Count}");
 
         Console.WriteLine("Tagging jobs with LLM...");
         var tagMap = await BatchTagJobs(endpoint, model, candidates);
@@ -107,20 +107,20 @@ internal static class TaskPeople
         var jobList = string.Join("\n", lines);
 
         var prompt = $$"""
-            Przypisz tagi do każdego z poniższych opisów stanowisk pracy.
-            Używaj WYŁĄCZNIE tagów z tej listy (możliwe kilka na rekord):
-            - IT: programowanie, systemy komputerowe, sieci, software, hardware
-            - transport: kierowcy, logistyka, spedycja, kurierzy, operatorzy pojazdów, zarządzanie flotą, dostawy, przewóz ładunków
-            - edukacja: nauczyciele, trenerzy, instruktorzy, wykładowcy
-            - medycyna: lekarze, pielęgniarki, farmaceuci, ratownicy, diagnostyka, leczenie
-            - praca z ludźmi: obsługa klienta, HR, psychologia, opieka, doradztwo
-            - praca z pojazdami: mechanicy, serwis, naprawa pojazdów, operatorzy maszyn
-            - praca fizyczna: budowa, montaż, produkcja, obróbka materiałów, instalacje
+            Assign tags to each job description below. The descriptions are in Polish.
+            Use ONLY tags from this list (multiple tags per record allowed):
+            - IT: programming, computer systems, networks, software, hardware
+            - transport: drivers, logistics, freight forwarding, couriers, vehicle operators, fleet management, deliveries, cargo transport
+            - edukacja: teachers, trainers, instructors, lecturers
+            - medycyna: doctors, nurses, pharmacists, paramedics, diagnostics, treatment
+            - praca z ludźmi: customer service, HR, psychology, care, counselling
+            - praca z pojazdami: mechanics, vehicle service, machine operators
+            - praca fizyczna: construction, assembly, manufacturing, materials processing, installations
 
-            Dla każdego rekordu zwróć jego numer (id) i tablicę pasujących tagów.
-            Jeśli żaden tag nie pasuje, zwróć pustą tablicę.
+            For each record return its number (id) and an array of matching tags.
+            If no tag fits, return an empty array.
 
-            Stanowiska:
+            Job descriptions:
             {{jobList}}
             """;
 
