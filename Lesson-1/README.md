@@ -8,13 +8,22 @@ Multi-turn conversation with the Responses API using full input history.
 dotnet run --project Lesson-1
 ```
 
-## Environment variables
+## Setup
+
+`appsettings.json` is gitignored. Copy the example and fill in your key:
+
+```bash
+cp appsettings.example.json appsettings.json
+```
+
+**Never commit `appsettings.json`** — the repo is public.
 
 | Variable | Required | Default |
 |---|---|---|
 | `AI_API_KEY` | yes | — |
 | `RESPONSES_API_ENDPOINT` | no | `https://api.openai.com/v1/responses` |
 | `AI_MODEL` | no | `o4-mini` |
+| `GROUND_MODEL` | no | `gpt-4o-mini` |
 
 ## What it does
 
