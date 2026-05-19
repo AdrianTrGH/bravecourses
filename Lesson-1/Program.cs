@@ -10,6 +10,8 @@ internal class Program
             _ => Lesson_01_01_interaction.MultiTurnConversation.Run()),
         ("01_01_structured",  "01_01 Structured",  "Extract typed JSON from free text using a schema",
             _ => Lesson_01_01_structured.StructuredOutput.Run()),
+        ("01_task",           "01 Task — People",  "Filter CSV + LLM tagging + submit to hub.ag3nts.org",
+            _ => Lesson_01_Task.TaskPeople.Run()),
     ];
 
     static async Task Main(string[] args)
