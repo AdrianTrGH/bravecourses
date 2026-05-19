@@ -30,34 +30,113 @@ internal class Program
 
     private static async Task RunMenu()
     {
-        var selected = 0;
-
-        while (true)
+        if (Console.IsInputRedirected)
         {
-            RenderMenu(selected);
-            var key = Console.ReadKey(intercept: true);
+            await RunTextMenu();
+            return;
+        }
 
-            switch (key.Key)
+        await RunArrowMenu();
+    }
+
+    private static async Task RunArrowMenu()
+    {
+        var selected = 0;
+        Console.CursorVisible = false;
+
+        try
+        {
+            while (true)
             {
-                case ConsoleKey.UpArrow:
-                    selected = (selected - 1 + Lessons.Length) % Lessons.Length;
-                    break;
-                case ConsoleKey.DownArrow:
-                    selected = (selected + 1) % Lessons.Length;
-                    break;
-                case ConsoleKey.Enter:
-                    Console.Clear();
-                    Console.WriteLine($"Running: {Lessons[selected].Label}\n");
-                    await Lessons[selected].Run([]);
-                    Console.WriteLine("\nPress any key to return to menu...");
-                    Console.ReadKey(intercept: true);
-                    break;
-                case ConsoleKey.Escape:
-                case ConsoleKey.Q:
-                    Console.Clear();
+                RenderMenu(selected);
+
+                if (!TryReadKey(out var key))
+                {
+                    await RunTextMenu();
                     return;
+                }
+
+                switch (key)
+                {
+                    case ConsoleKey.UpArrow:
+                        selected = (selected - 1 + Lessons.Length) % Lessons.Length;
+                        break;
+                    case ConsoleKey.DownArrow:
+                        selected = (selected + 1) % Lessons.Length;
+                        break;
+                    case ConsoleKey.Enter:
+                        Console.Clear();
+                        Console.CursorVisible = true;
+                        Console.WriteLine($"Running: {Lessons[selected].Label}\n");
+                        await Lessons[selected].Run([]);
+                        Console.CursorVisible = false;
+                        FlushInputBuffer();
+                        Console.WriteLine("\nPress any key to return to menu...");
+                        TryReadKey(out _);
+                        break;
+                    case ConsoleKey.Escape:
+                    case ConsoleKey.Q:
+                        Console.Clear();
+                        return;
+                }
             }
         }
+        finally
+        {
+            Console.CursorVisible = true;
+            Console.ResetColor();
+        }
+    }
+
+    private static async Task RunTextMenu()
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("  bravecourses — Lesson 1");
+            Console.ResetColor();
+            Console.WriteLine();
+            for (var i = 0; i < Lessons.Length; i++)
+                Console.WriteLine($"  [{i + 1}] {Lessons[i].Label,-24}  {Lessons[i].Description}");
+            Console.WriteLine("  [0] Exit");
+            Console.WriteLine();
+            Console.Write("  Choose: ");
+
+            var input = Console.ReadLine()?.Trim();
+            if (input == "0" || input == null) return;
+
+            if (int.TryParse(input, out var n) && n >= 1 && n <= Lessons.Length)
+            {
+                Console.WriteLine($"\nRunning: {Lessons[n - 1].Label}\n");
+                await Lessons[n - 1].Run([]);
+                Console.WriteLine("\nDone. Press Enter to return to menu...");
+                Console.ReadLine();
+            }
+        }
+    }
+
+    private static bool TryReadKey(out ConsoleKey key)
+    {
+        key = default;
+        try
+        {
+            ConsoleKeyInfo info;
+            do { info = Console.ReadKey(intercept: true); }
+            while (info.Key == ConsoleKey.NoName);
+            key = info.Key;
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static void FlushInputBuffer()
+    {
+        try { while (Console.KeyAvailable) Console.ReadKey(intercept: true); }
+        catch (InvalidOperationException) { }
     }
 
     private static void RenderMenu(int selected)
@@ -81,7 +160,6 @@ internal class Program
                 Console.ResetColor();
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine($"  {description}");
-                Console.ResetColor();
             }
             else
             {
@@ -91,8 +169,8 @@ internal class Program
                 Console.Write($"{label,-24}");
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.WriteLine($"  {description}");
-                Console.ResetColor();
             }
+            Console.ResetColor();
         }
 
         Console.WriteLine();

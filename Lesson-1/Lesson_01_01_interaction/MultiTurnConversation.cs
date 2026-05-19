@@ -60,9 +60,6 @@ internal static class MultiTurnConversation
         using var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await HttpClient.PostAsync(_endpoint, content);
         var responseJson = await response.Content.ReadAsStringAsync();
-
-        Console.WriteLine($"[DEBUG] Response: {responseJson}");
-
         using var doc = JsonDocument.Parse(responseJson);
         var root = doc.RootElement;
 

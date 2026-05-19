@@ -1,0 +1,37 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Lesson-1 (menu)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/Lesson-1/bin/Debug/net10.0/Lesson-1.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/Lesson-1",
+      "console": "integratedTerminal",
+      "preLaunchTask": "build"
+    },
+    {
+      "name": "Lesson-1 (args)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/Lesson-1/bin/Debug/net10.0/Lesson-1.dll",
+      "args": ["${input:lessonKey}"],
+      "cwd": "${workspaceFolder}/Lesson-1",
+      "console": "integratedTerminal",
+      "preLaunchTask": "build"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "lessonKey",
+      "type": "pickString",
+      "description": "Which lesson to run?",
+      "options": [
+        "01_01_grounding",
+        "01_01_interaction",
+        "01_01_structured"
+      ]
+    }
+  ]
+}
